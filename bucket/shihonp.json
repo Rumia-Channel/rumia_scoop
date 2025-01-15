@@ -1,36 +1,59 @@
 {
-    "description": "完全無料、登録不要。Windows専用の蔵書管理ソフトです。",
-    "license": {
+  "description": "完全無料、登録不要。Windows専用の蔵書管理ソフトです。",
+  "license": {
       "identifier": "Freeware"
-    },
-    "bin": "shihon.exe",
-    "shortcuts": [
+  },
+  "bin": "shihon.exe",
+  "shortcuts": [
       [
-        "shihon.exe",
-        "私本管理Plus"
+          "shihon.exe",
+          "私本管理Plus"
       ]
-    ],
-    "persist": [
+  ],
+  "persist": [
       "data"
-    ],
-    "post_install": [
-      "if (!(Test-Path \"$env:USERPROFILE\\Documents\\私本管理Plus\")) {",
-      "  New-Item -ItemType Directory -Path \"$env:USERPROFILE\\Documents\\私本管理Plus\"",
+  ],
+  "post_install": [
+      "$DocumentsPath = [Environment]::GetFolderPath('MyDocuments')",
+      "$DesktopPath = [Environment]::GetFolderPath('Desktop')",
+      "if (!(Test-Path \"$DocumentsPath\\私本管理Plus\")) {",
+      "  New-Item -ItemType Directory -Path \"$DocumentsPath\\私本管理Plus\"",
       "}",
       "if (Test-Path \"$persist_dir\\data\") {",
-      "  if (Test-Path \"$env:USERPROFILE\\Documents\\私本管理Plus\") {",
-      "    Get-ChildItem \"$env:USERPROFILE\\Documents\\私本管理Plus\" -File | ForEach-Object {",
+      "  if (Test-Path \"$DocumentsPath\\私本管理Plus\") {",
+      "    Get-ChildItem \"$DocumentsPath\\私本管理Plus\" -File | ForEach-Object {",
       "      if (!(Test-Path \"$persist_dir\\data\\$($_.Name)\")) {",
       "        Copy-Item $_.FullName \"$persist_dir\\data\" -Force",
       "      }",
       "    }",
-      "    Remove-Item \"$env:USERPROFILE\\Documents\\私本管理Plus\" -Recurse -Force",
+      "    Remove-Item \"$DocumentsPath\\私本管理Plus\" -Recurse -Force",
       "  }",
-      "  New-Item -ItemType SymbolicLink -Path \"$env:USERPROFILE\\Documents\\私本管理Plus\" -Target \"$persist_dir\\data\"",
+      "  New-Item -ItemType SymbolicLink -Path \"$DocumentsPath\\私本管理Plus\" -Target \"$persist_dir\\data\"",
+      "}",
+      "if (!(Test-Path \"$DesktopPath\\私本管理Plus.lnk\")) {",
+      "  Write-Output \"Creating desktop shortcut for 私本管理Plus...\"",
+      "  $WshShell = New-Object -ComObject WScript.Shell",
+      "  $Shortcut = $WshShell.CreateShortcut(\"$DesktopPath\\私本管理Plus.lnk\")",
+      "  $Shortcut.TargetPath = \"$dir\\shihon.exe\"",
+      "  $Shortcut.WorkingDirectory = \"$dir\"",
+      "  $Shortcut.Save()",
+      "} else {",
+      "  Write-Output \"Desktop shortcut for 私本管理Plus already exists. Skipping creation.\"",
       "}"
-    ],
-    "version": "10.0.1",
-    "url": "http://ekakin.la.coocan.jp/download/shihonpv1001.zip",
-    "homepage": "http://ekakin.la.coocan.jp/shihonp.htm",
-    "hash": "b9bfe93f939fb1269374098f579c2f1bfe78c463a4f140d28cac2d514f09e76d"
-}  
+  ],
+  "uninstaller": {
+      "script": [
+          "$DesktopPath = [Environment]::GetFolderPath('Desktop')",
+          "if (Test-Path \"$DesktopPath\\私本管理Plus.lnk\") {",
+          "  Write-Output \"Removing desktop shortcut for 私本管理Plus...\"",
+          "  Remove-Item \"$DesktopPath\\私本管理Plus.lnk\" -Force",
+          "} else {",
+          "  Write-Output \"No desktop shortcut for 私本管理Plus found. Skipping removal.\"",
+          "}"
+      ]
+  },
+  "version": "10.0.1",
+  "url": "http://ekakin.la.coocan.jp/download/shihonpv1001.zip",
+  "homepage": "http://ekakin.la.coocan.jp/shihonp.htm",
+  "hash": "b9bfe93f939fb1269374098f579c2f1bfe78c463a4f140d28cac2d514f09e76d"
+}

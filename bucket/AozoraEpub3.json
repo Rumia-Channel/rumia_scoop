@@ -34,8 +34,14 @@
         "  Copy-Item \"$dir\\AozoraEpub3.ini\" \"$persist_dir\\setting\\AozoraEpub3.ini\" -Force -ErrorAction SilentlyContinue",
         "}"
     ],
-    "checkver": "github",
+    "checkver": {
+        "url": "https://github.com/kyukyunyorituryo/AozoraEpub3/releases",
+        "regex": "/releases/tag/v([\\d.\\w]+)"
+    },
     "autoupdate": {
-        "url": "https://github.com/kyukyunyorituryo/AozoraEpub3/releases/download/v$version/AozoraEpub3-$version.zip"
+        "url": "https://github.com/kyukyunyorituryo/AozoraEpub3/releases/download/v$version/AozoraEpub3-$version.zip",
+        "hash": {
+            "url": "https://github.com/kyukyunyorituryo/AozoraEpub3/releases/download/v$version/AozoraEpub3-$version.zip.sha256"
+        }
     }
 }

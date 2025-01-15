@@ -1,0 +1,36 @@
+{
+    "description": "完全無料、登録不要。Windows専用の蔵書管理ソフトです。",
+    "license": {
+      "identifier": "Freeware"
+    },
+    "bin": "shihon.exe",
+    "shortcuts": [
+      [
+        "shihon.exe",
+        "私本管理Plus"
+      ]
+    ],
+    "persist": [
+      "data"
+    ],
+    "post_install": [
+      "if (!(Test-Path \"$env:USERPROFILE\\Documents\\私本管理Plus\")) {",
+      "  New-Item -ItemType Directory -Path \"$env:USERPROFILE\\Documents\\私本管理Plus\"",
+      "}",
+      "if (Test-Path \"$persist_dir\\data\") {",
+      "  if (Test-Path \"$env:USERPROFILE\\Documents\\私本管理Plus\") {",
+      "    Get-ChildItem \"$env:USERPROFILE\\Documents\\私本管理Plus\" -File | ForEach-Object {",
+      "      if (!(Test-Path \"$persist_dir\\data\\$($_.Name)\")) {",
+      "        Copy-Item $_.FullName \"$persist_dir\\data\" -Force",
+      "      }",
+      "    }",
+      "    Remove-Item \"$env:USERPROFILE\\Documents\\私本管理Plus\" -Recurse -Force",
+      "  }",
+      "  New-Item -ItemType SymbolicLink -Path \"$env:USERPROFILE\\Documents\\私本管理Plus\" -Target \"$persist_dir\\data\"",
+      "}"
+    ],
+    "version": "10.0.1",
+    "url": "http://ekakin.la.coocan.jp/download/shihonpv1001.zip",
+    "homepage": "http://ekakin.la.coocan.jp/shihonp.htm",
+    "hash": "b9bfe93f939fb1269374098f579c2f1bfe78c463a4f140d28cac2d514f09e76d"
+}  
